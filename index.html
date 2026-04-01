@@ -3,108 +3,243 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cricket Central | Live Scores & Stats</title>
+    <title>AA-Analytics | Home of Advanced Sports Intelligence</title>
     <style>
-        /* Core Styling */
+        :root {
+            /* GitHub-inspired Dark Theme with a "Better than ESPN" aesthetic */
+            --primary: #58a6ff; /* A clean blue for links/accents */
+            --bg: #0d1117; /* Main dark background */
+            --card-bg: #161b22; /* Card/Sidebar background */
+            --border: #30363d; /* Subtle borders */
+            --text-main: #c9d1d9; /* Off-white main text */
+            --text-dim: #8b949e; /* Dim text for labels */
+        }
+
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #0b0e11;
-            color: #ffffff;
             margin: 0;
-            padding: 0;
-        }
-
-        header {
-            background-color: #1a1d23;
-            padding: 1rem 5%;
+            font-family: 'Segoe UI', 'Inter', -apple-system, sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 2px solid #3fb950;
+            height: 100vh;
+            overflow: hidden;
         }
 
-        header h1 { color: #3fb950; margin: 0; font-size: 1.5rem; }
+        /* 1. Sidebar Navigation (Dashboard Style) */
+        nav {
+            width: 280px;
+            background: var(--card-bg);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            padding: 30px;
+        }
 
-        /* Grid Layout for Match Cards */
-        .container {
-            padding: 2rem 5%;
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: white;
+            margin-bottom: 50px;
+            display: flex; align-items: center; gap: 10px;
+        }
+        .logo span { color: var(--primary); }
+
+        .nav-item {
+            padding: 14px 18px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: 0.3s;
+            color: var(--text-dim);
+            font-weight: 600;
+            display: flex; align-items: center; gap: 12px;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background: rgba(88, 166, 255, 0.1);
+            color: var(--primary);
+        }
+
+        .nav-icon { font-size: 1.2rem; }
+
+        /* 2. Main Content Area */
+        main {
+            flex: 1;
+            padding: 50px;
+            overflow-y: auto;
+            scroll-behavior: smooth;
+        }
+
+        .page { display: none; }
+        .page.active { display: block; animation: fadeIn 0.4s ease; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Header section */
+        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        header h1 { color: white; margin: 0; font-size: 2.2rem; font-weight: 800; }
+        .date-picker { color: var(--text-dim); }
+
+        /* 3. Global Styling for Cards & Layouts */
+        .card-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 25px;
+            margin-top: 20px;
         }
 
         .card {
-            background-color: #161b22;
-            border: 1px solid #30363d;
-            border-radius: 10px;
-            padding: 20px;
-            transition: transform 0.2s;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 28px;
+            position: relative;
+            transition: all 0.2s;
         }
+        .card:hover { border-color: var(--primary); transform: translateY(-3px); }
 
-        .card:hover {
-            transform: translateY(-5px);
-            border-color: #3fb950;
-        }
+        .card h2 { color: white; margin-top: 0; font-size: 1.5rem; }
+        .card p { color: var(--text-dim); line-height: 1.6; }
 
-        .status {
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            color: #f85149; /* Red for Live */
-            font-weight: bold;
+        .badge {
+            position: absolute; top: 20px; right: 20px;
+            padding: 5px 12px; border-radius: 20px; font-size: 11px;
+            text-transform: uppercase; font-weight: bold;
         }
+        .badge-live { background: rgba(248, 81, 73, 0.15); color: #f85149; }
+        .badge-exclusive { background: rgba(63, 185, 80, 0.15); color: #3fb950; }
 
-        .teams {
-            font-size: 1.2rem;
-            margin: 15px 0;
-            font-weight: bold;
-        }
+        .stat-value { font-size: 2.5rem; font-weight: bold; color: white; margin-top: 10px; }
+        .stat-label { font-size: 0.9rem; color: var(--text-dim); text-transform: uppercase; }
 
-        .score {
-            color: #8b949e;
-            font-size: 1rem;
+        .btn-link {
+            color: var(--primary); text-decoration: none; font-weight: 600; display: inline-block; margin-top: 15px;
         }
+        .btn-link:hover { text-decoration: underline; }
 
-        .btn {
-            display: inline-block;
-            margin-top: 15px;
-            padding: 8px 16px;
-            background-color: #238636;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            font-size: 0.9rem;
-        }
+        /* Points Table Styling */
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 0.95rem;}
+        th { text-align: left; color: var(--text-dim); padding: 15px; border-bottom: 1px solid var(--border); }
+        td { padding: 15px; border-bottom: 1px solid var(--border); color: var(--text-main); }
+        .table-pos { font-weight: bold; color: white; width: 30px;}
+
     </style>
 </head>
 <body>
 
-<header>
-    <h1>CRICKET CENTRAL</h1>
-    <nav>Team: Asad & Aiman</nav>
-</header>
+    <nav>
+        <div class="logo"><span>AA</span> Analytics</div>
+        
+        <div class="nav-item active" onclick="showPage('home')">
+            <span class="nav-icon">📊</span> Dashboard
+        </div>
+        <div class="nav-item" onclick="showPage('live')">
+            <span class="nav-icon">🔴</span> Live Scores
+        </div>
+        <div class="nav-item" onclick="showPage('news')">
+            <span class="nav-icon">📰</span> Sports News
+        </div>
+        <div class="nav-item" onclick="showPage('analysis')">
+            <span class="nav-icon">🧠</span> Pure Analysis
+        </div>
+        <div class="nav-item" onclick="showPage('admins')">
+            <span class="nav-icon">🔒</span> Admin Area
+        </div>
+        
+        <div style="margin-top: auto; font-size: 13px; color: var(--text-dim); border-top: 1px solid var(--border); padding-top: 15px;">
+            Core Tech: <b style="color: white">Git Pages / Lab 11</b>
+        </div>
+    </nav>
 
-<div class="container">
-    <div class="card">
-        <span class="status">● Live</span>
-        <div class="teams">PAK vs AUS</div>
-        <div class="score">PAK: 285/4 (45.2)</div>
-        <a href="#" class="btn">View Commentary</a>
-    </div>
+    <main>
+        
+        <div id="home" class="page active">
+            <header>
+                <h1>Welcome to AA Analysis</h1>
+                <span class="date-picker">Session: <b style="color: white">Asad & Aiman</b></span>
+            </header>
+            <p>Your portal for real-time sports intelligence, data analytics, and deep-dive commentary.</p>
+            
+            <div class="card-grid">
+                <div class="card">
+                    <span class="badge badge-live">Live</span>
+                    <h2>PAK vs NZ: 3rd T20I</h2>
+                    <p style="font-size: 1.8rem; margin: 15px 0; font-weight: bold;">PAK 192/4 <span style="font-size: 1rem; color: var(--text-dim)">(20.0)</span></p>
+                    <p>NZ need 193 runs to win. Target rate 9.65.</p>
+                </div>
+                <div class="card">
+                    <span class="badge badge-exclusive">Analysis</span>
+                    <h2>F1: Verstappen's Data</h2>
+                    <p>Deep-dive analysis on Max Verstappen’s telemetry data from last weekend’s Monaco Grand Prix. Why his S2 was unstoppable.</p>
+                    <a href="#" onclick="showPage('analysis')" class="btn-link">Read Analysis</a>
+                </div>
+                <div class="card">
+                    <span class="badge badge-exclusive">Interview</span>
+                    <h2>Babar Azam Exclusive</h2>
+                    <p>In-depth conversation: Babar discusses captaincy pressure, World Cup preparation, and his new batting stance tweaks.</p>
+                    <a href="#" onclick="showPage('news')" class="btn-link">Watch Interview</a>
+                </div>
+            </div>
+        </div>
 
-    <div class="card">
-        <span class="status" style="color: #8b949e;">Finished</span>
-        <div class="teams">IND vs SA</div>
-        <div class="score">IND won by 15 runs</div>
-        <a href="#" class="btn">Match Report</a>
-    </div>
+        <div id="live" class="page">
+            <header><h1>Live Match Center</h1></header>
+            <div class="card">
+                <span class="badge badge-live">Live</span>
+                <h3>IPL 2026: MI vs CSK</h3>
+                <p>Venue: Wankhede Stadium, Mumbai</p>
+                <p style="font-size: 2.2rem; margin: 20px 0; font-weight: bold; color: var(--primary);">MI 162/8 (19.4)</p>
+                <p>Final Over. Pollard on strike (54*). Current Run Rate: 8.23.</p>
+            </div>
+            <h2 style="margin-top: 40px;">Finished Matches</h2>
+            <div class="card-grid">
+                <div class="card">
+                    <h3>Chelsea vs Arsenal</h3>
+                    <p>Premier League. Full Time.</p>
+                    <p style="font-size: 1.5rem; font-weight: bold;">Chelsea 2 - 1 Arsenal</p>
+                </div>
+                <div class="card">
+                    <h3>Djokovic vs Nadal</h3>
+                    <p>Roland Garros. Quarter Final.</p>
+                    <p style="font-size: 1.5rem; font-weight: bold;">Djokovic won in 4 sets.</p>
+                </div>
+            </div>
+        </div>
 
-    <div class="card">
-        <span class="status" style="color: #3fb950;">Upcoming</span>
-        <div class="teams">ENG vs NZ</div>
-        <div class="score">Starts at 14:00 GMT</div>
-        <a href="#" class="btn">Set Reminder</a>
-    </div>
-</div>
+        <div id="news" class="page">
+            <header><h1>Sports News of the Day</h1></header>
+            <p>Today's headline news, transfer rumors, and in-depth exclusive interviews.</p>
+            
+            <div class="card-grid" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
+                <div class="card">
+                    <span class="badge badge-exclusive">Interview</span>
+                    <h3>The Lionel Messi Tapes</h3>
+                    <p>"I will never regret my time in Miami." Messi discusses the evolution of MLS and his future plans with Argentina.</p>
+                    <a href="#" class="btn-link">Read Full Transcript</a>
+                </div>
+                <div class="card">
+                    <h3>NBA: Celtics Champions</h3>
+                    <p>Celtics clinch their 18th title, defeating the Mavericks in 5 games. Tatum named Finals MVP.</p>
+                </div>
+                <div class="card">
+                    <h3>F1: Red Bull Dominance</h3>
+                    <p>Horner says Red Bull’s RB20 still has "massive headroom" as Verstappen continues to dominate the season.</p>
+                </div>
+                <div class="card">
+                    <span class="badge badge-exclusive">Interview</span>
+                    <h3>Virat Kohli Special</h3>
+                    <p>"Test cricket is my passion." Kohli shares insights on his mindset and the upcoming World Test Championship.</p>
+                    <a href="#" class="btn-link">Read Transcript</a>
+                </div>
+            </div>
+        </div>
 
-</body>
-</html>
+        <div id="analysis" class="page">
+            <header><h1>Advanced Sports Analytics</h1></header>
+            <p>Raw data analysis and expert tactical breakdowns. Powered by AA Intelligence.</p>
+            
+            <div class="card" style="margin-top: 30px;">
+                <h2>Why Pakistan is dominating the 2026 T20I Season
