@@ -2,19 +2,109 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Lab 11 - GitHub Pages</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cricket Central | Live Scores & Stats</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; text-align: center; padding: 50px; background-color: #eef2f3; }
-        .card { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); display: inline-block; }
-        h1 { color: #2c3e50; }
-        p { color: #7f8c8d; }
+        /* Core Styling */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #0b0e11;
+            color: #ffffff;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #1a1d23;
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #3fb950;
+        }
+
+        header h1 { color: #3fb950; margin: 0; font-size: 1.5rem; }
+
+        /* Grid Layout for Match Cards */
+        .container {
+            padding: 2rem 5%;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background-color: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 10px;
+            padding: 20px;
+            transition: transform 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: #3fb950;
+        }
+
+        .status {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            color: #f85149; /* Red for Live */
+            font-weight: bold;
+        }
+
+        .teams {
+            font-size: 1.2rem;
+            margin: 15px 0;
+            font-weight: bold;
+        }
+
+        .score {
+            color: #8b949e;
+            font-size: 1rem;
+        }
+
+        .btn {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 8px 16px;
+            background-color: #238636;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 0.9rem;
+        }
     </style>
 </head>
 <body>
+
+<header>
+    <h1>CRICKET CENTRAL</h1>
+    <nav>Team: Asad & Aiman</nav>
+</header>
+
+<div class="container">
     <div class="card">
-        <h1>Lab 11: Deployment</h1>
-        <h3>Team: Asad & Aiman</h3>
-        <p>We successfully learned Branching, Merging, and Conflict Resolution in this lab.</p>
+        <span class="status">● Live</span>
+        <div class="teams">PAK vs AUS</div>
+        <div class="score">PAK: 285/4 (45.2)</div>
+        <a href="#" class="btn">View Commentary</a>
     </div>
+
+    <div class="card">
+        <span class="status" style="color: #8b949e;">Finished</span>
+        <div class="teams">IND vs SA</div>
+        <div class="score">IND won by 15 runs</div>
+        <a href="#" class="btn">Match Report</a>
+    </div>
+
+    <div class="card">
+        <span class="status" style="color: #3fb950;">Upcoming</span>
+        <div class="teams">ENG vs NZ</div>
+        <div class="score">Starts at 14:00 GMT</div>
+        <a href="#" class="btn">Set Reminder</a>
+    </div>
+</div>
+
 </body>
 </html>
